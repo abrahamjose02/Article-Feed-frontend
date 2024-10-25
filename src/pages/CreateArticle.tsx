@@ -3,6 +3,7 @@ import axiosInstance from '../axios/axiosInstance';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { ArticleCategory, articleCategories } from '../enum/ArticleCategory'; // Import the enum
+import Navbar from '../components/Navbar';
 
 const CreateArticle: React.FC = () => {
     const [title, setTitle] = useState('');
@@ -48,6 +49,8 @@ const CreateArticle: React.FC = () => {
     };
 
     return (
+        <div>
+            <Navbar/>
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Create Article</h1>
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
@@ -113,6 +116,7 @@ const CreateArticle: React.FC = () => {
                     Create Article
                 </button>
             </form>
+        </div>
         </div>
     );
 };

@@ -47,7 +47,7 @@ const Signup: React.FC = () => {
                 .matches(/^\d{10}$/, 'Must be exactly 10 digits')
                 .required('Phone Number is required'),
             dob: Yup.date()
-                .max(new Date('2014-01-01'), 'Date of Birth must be before 2014')
+                .max(new Date('2022-01-01'), 'Date of Birth must be before 2022')
                 .required('Date of Birth is required'),
             password: Yup.string()
                 .min(6, 'Password must be at least 6 characters')

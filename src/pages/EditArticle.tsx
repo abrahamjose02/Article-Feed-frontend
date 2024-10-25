@@ -3,6 +3,7 @@ import axiosInstance from '../axios/axiosInstance';
 import { toast } from 'sonner';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArticleCategory, articleCategories } from '../enum/ArticleCategory';
+import Navbar from '../components/Navbar';
 
 const EditArticle: React.FC = () => {
     const { articleId } = useParams<{ articleId: string }>();
@@ -69,6 +70,8 @@ const EditArticle: React.FC = () => {
     };
 
     return (
+        <div>
+            <Navbar/>
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Edit Article</h1>
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
@@ -132,6 +135,7 @@ const EditArticle: React.FC = () => {
                     Update Article
                 </button>
             </form>
+        </div>
         </div>
     );
 };

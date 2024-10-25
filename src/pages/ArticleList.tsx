@@ -3,6 +3,7 @@ import axiosInstance from '../axios/axiosInstance';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
+import Navbar from '../components/Navbar';
 
 const ArticleList: React.FC = () => {
     const [articles, setArticles] = useState<any[]>([]);
@@ -42,6 +43,8 @@ const ArticleList: React.FC = () => {
     };
 
     return (
+        <div>
+            <Navbar/>
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">My Articles</h1>
             {articles.length === 0 ? (
@@ -69,6 +72,7 @@ const ArticleList: React.FC = () => {
                     ))}
                 </div>
             )}
+        </div>
         </div>
     );
 };
