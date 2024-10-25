@@ -6,6 +6,9 @@ import Verification from './pages/Verification'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Settings from './pages/Settings'
+import CreateArticle from './pages/CreateArticle'
+import ArticleList from './pages/ArticleList'
+import EditArticle from './pages/EditArticle'
 
 const App = () => {
   return (
@@ -17,6 +20,9 @@ const App = () => {
         <Route path='/login' element= {<Login/>}/>
         <Route path='/dashboard' element={<Dashboard/>}/>
         <Route path='/settings' element={<Settings/>}/>
+        <Route path='/create-article' element={<CreateArticle/>}/>
+        <Route path='/my-articles' element={<ArticleList/>}/>
+        <Route path='/edit-article/:articleId' element={<EditArticle/>}/>
       </Routes>
     </div>
   )

@@ -13,6 +13,8 @@ export enum ArticleCategory {
     SCIENCE = "Science"
 }
 
+export const articleCategories = Object.values(ArticleCategory);
+
 
 export interface IArticle {
     _id: string;
