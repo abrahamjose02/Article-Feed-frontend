@@ -22,7 +22,6 @@ const Dashboard: React.FC = () => {
                         (article: IArticle) => !article.blockedBy.includes(user.id)
                     );
 
-                    
                     const enhancedArticles = visibleArticles.map((article: { likes: any[]; dislikes: any[]; }) => ({
                         ...article,
                         hasLiked: article.likes.some(like => like.userId === user.id),
@@ -54,7 +53,7 @@ const Dashboard: React.FC = () => {
                                 ...article,
                                 likes: res.data.articleLikes,
                                 hasLiked: newHasLiked,
-                                hasDisliked: false, // Reset dislike state when liking
+                                hasDisliked: false,
                             };
                         }
                         return article;
@@ -75,11 +74,11 @@ const Dashboard: React.FC = () => {
                 setArticles(prevArticles =>
                     prevArticles.map(article => {
                         if (article._id === articleId) {
-                            const newHasDisliked = !article.hasDisliked; // Toggle the dislike state
+                            const newHasDisliked = !article.hasDisliked;
                             return {
                                 ...article,
                                 dislikes: res.data.articleDislikes,
-                                hasDisliked: newHasDisliked, // Toggle hasDisliked status
+                                hasDisliked: newHasDisliked,
                             };
                         }
                         return article;
@@ -119,19 +118,19 @@ const Dashboard: React.FC = () => {
     }
 
     return (
-        <div>
+        <div className="min-h-screen bg-gradient-to-br from-slate-800 via-gray-900 to-gray-700">
             <Navbar />
             <div className="container mx-auto p-4">
-                <h1 className="text-2xl font-bold mb-4">Articles</h1>
+                <h1 className="text-3xl font-bold mb-6 text-white text-center">Articles</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {articles.map((article) => (
-                        <div key={article._id} className="border rounded-lg p-4 shadow-md bg-white hover:shadow-lg transition-shadow">
+                        <div key={article._id} className="border rounded-lg p-4 shadow-md bg-gradient-to-r from-white via-gray-100 to-gray-200 hover:shadow-lg transition-shadow">
                             <img 
                                 src={article.images[0]} 
                                 alt={article.title} 
                                 className="w-full h-48 object-cover rounded-t-lg mb-2" 
                             />
-                            <h2 className="text-xl font-semibold cursor-pointer" onClick={() => openModal(article)}>
+                            <h2 className="text-xl font-semibold cursor-pointer hover:text-blue-700 transition-colors" onClick={() => openModal(article)}>
                                 {article.title}
                             </h2>
                             <p className="text-gray-700 mt-2">{article.description}</p>
@@ -140,7 +139,7 @@ const Dashboard: React.FC = () => {
                             <div className="flex justify-between mt-4">
                                 <div className="flex items-center">
                                     <button 
-                                        className="flex items-center text-blue-600 px-4" 
+                                        className="flex items-center text-blue-600 px-4 transition-colors hover:text-blue-800" 
                                         onClick={() => handleLike(article._id)}
                                     >
                                         {article.hasLiked ? (
@@ -151,7 +150,7 @@ const Dashboard: React.FC = () => {
                                         <span className="ml-1">{article.likes.length}</span>
                                     </button>
                                     <button 
-                                        className={`flex items-center ${article.hasDisliked ? 'text-red-800 bg-red-100' : 'text-red-600'}`}
+                                        className={`flex items-center ${article.hasDisliked ? 'text-red-800 bg-red-100' : 'text-red-600'} transition-colors hover:text-red-800`} 
                                         onClick={() => {
                                             if (!article.hasLiked) {
                                                 handleDislike(article._id);
@@ -168,7 +167,9 @@ const Dashboard: React.FC = () => {
                                         <span className="ml-1">{article.dislikes.length}</span>
                                     </button>
                                 </div>
-                                <button className="text-red-600" onClick={() => handleBlock(article._id)}>Block</button>
+                                <button className="text-red-600 hover:text-red-800 transition-colors" onClick={() => handleBlock(article._id)}>
+                                    Block
+                                </button>
                             </div>
                         </div>
                     ))}
