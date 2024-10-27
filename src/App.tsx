@@ -9,6 +9,8 @@ import Settings from './pages/Settings'
 import CreateArticle from './pages/CreateArticle'
 import ArticleList from './pages/ArticleList'
 import EditArticle from './pages/EditArticle'
+import PrivateRoute from './components/PrivateRoute'
+
 
 const App = () => {
   return (
@@ -17,12 +19,14 @@ const App = () => {
       <Routes>
         <Route path='/signup' element={<Signup/>}/>
         <Route path='/verification' element={<Verification/>}/>
-        <Route path='/login' element= {<Login/>}/>
-        <Route path='/dashboard' element={<Dashboard/>}/>
+          <Route path='/login' element= {<Login/>}/>
+        <Route element={<PrivateRoute/>}>
+        <Route path='dashboard' element={<Dashboard/>}/>
         <Route path='/settings' element={<Settings/>}/>
         <Route path='/create-article' element={<CreateArticle/>}/>
         <Route path='/my-articles' element={<ArticleList/>}/>
         <Route path='/edit-article/:articleId' element={<EditArticle/>}/>
+        </Route>
       </Routes>
     </div>
   )

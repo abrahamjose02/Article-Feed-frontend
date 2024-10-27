@@ -7,6 +7,7 @@ import axiosInstance from '../axios/axiosInstance';
 import { toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../store/userSlice';
+import store from '../store/store';
 
 interface LoginFormValues {
   email: string;
@@ -18,7 +19,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { email } = useSelector((state: any) => state.user); // Selecting email to check if the user is already logged in
+  const { email } = useSelector((state: any) => state.user); 
 
   useEffect(() => {
     if (email) {
@@ -44,9 +45,9 @@ const Login: React.FC = () => {
       try {
         const res = await axiosInstance.post('/auth/login', values);
 
+        console.log("res.data : ",res.data);
         if (res.status === 200) {
-          const user = res.data; // User data returned from the backend
-
+          const {user} = res.data; 
           dispatch(setUser({
             firstName: user.firstName,
             lastName: user.lastName,
@@ -54,8 +55,10 @@ const Login: React.FC = () => {
             phone: user.phone,
             dob: user.dob,
             preferences: user.preferences,
-            token: null, // No token is being stored
+            token: null, 
           }));
+
+          console.log("Redux state after login:", store.getState());
           
           toast.success('Login successful!');
           navigate('/dashboard', { replace: true });

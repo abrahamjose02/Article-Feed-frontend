@@ -3,7 +3,7 @@ import axiosInstance from '../axios/axiosInstance';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import Navbar from '../components/Navbar';
-import { ArticleCategory } from '../enum/ArticleCategory'; // Import the enum
+import { ArticleCategory } from '../enum/ArticleCategory';
 
 const Settings: React.FC = () => {
     const [firstName, setFirstName] = useState('');
@@ -11,25 +11,21 @@ const Settings: React.FC = () => {
     const [phone, setPhone] = useState('');
     const [dob, setDob] = useState('');
     const [preferences, setPreferences] = useState<string[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState<ArticleCategory | ''>(''); // State for selected category
+    const [selectedCategory, setSelectedCategory] = useState<ArticleCategory | ''>('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(true);
-    const user = useSelector((state: any) => state.user);
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const res = await axiosInstance.get('/auth/profile'); // Adjusted to match your route
+                const res = await axiosInstance.get('/auth/profile');
                 if (res.data.success) {
                     const { firstName, lastName, phone, dob, preferences } = res.data.user;
-                    setFirstName(firstName);
-                    setLastName(lastName);
-                    setPhone(phone);
-                    
-                    // Convert the ISO date string to YYYY-MM-DD format
-                    const formattedDob = dob ? new Date(dob).toISOString().split('T')[0] : '';
-                    setDob(formattedDob); // Set the formatted date
-
+                    setFirstName(firstName || '');
+                    setLastName(lastName || '');
+                    setPhone(phone || '');
+                    setDob(dob ? new Date(dob).toISOString().split('T')[0] : '');
                     setPreferences(preferences || []);
                 }
             } catch (error) {
@@ -39,50 +35,57 @@ const Settings: React.FC = () => {
                 setLoading(false);
             }
         };
-
         fetchUserProfile();
     }, []);
 
+    const validateInputs = () => {
+        const newErrors: { [key: string]: string } = {};
+
+        if (!firstName.trim()) newErrors.firstName = 'First name is required';
+        if (!lastName.trim()) newErrors.lastName = 'Last name is required';
+        if (phone && !/^\d{10,15}$/.test(phone)) newErrors.phone = 'Phone number should be 10 digits';
+        if (password && password.length < 6) newErrors.password = 'Password should be at least 6 characters';
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const updateData = {
-            firstName,
-            lastName,
-            phone,
-            dob, 
-            preferences, 
-            password
-        };
+        if (!validateInputs()) return;
 
-        console.log('Updating user with data:', updateData); 
+        const updateData = {
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            phone,
+            dob,
+            preferences,
+            password,
+        };
 
         try {
             const res = await axiosInstance.post('/auth/update', updateData);
-            console.log('Update response:', res.data); 
-            
             if (res.data.success) {
-                toast.success('User updated successfully'); 
-            } else {
-                toast.error('Failed to update user'); 
+                toast.success('User updated successfully');
             }
         } catch (error: any) {
             console.error('Error updating user:', error);
-            toast.error(error.response?.data?.message || 'Failed to update user'); // Show error toast
+            toast.error(error.response?.data?.message || 'Failed to update user');
         }
     };
 
     const handleRemovePreference = (preference: string) => {
         setPreferences(preferences.filter((pref) => pref !== preference));
-        toast.success(`Removed preference: ${preference}`); // Toast notification for removing a preference
+        toast.success(`Removed preference: ${preference}`);
     };
 
     const handleAddPreference = () => {
         if (selectedCategory && !preferences.includes(selectedCategory)) {
             setPreferences([...preferences, selectedCategory]);
-            toast.success(`Added preference: ${selectedCategory}`); // Toast notification for adding a preference
+            toast.success(`Added preference: ${selectedCategory}`);
             setSelectedCategory('');
         } else {
-            toast.error('Preference already exists or no category selected'); // Error notification
+            toast.error('Preference already exists or no category selected');
         }
     };
 
@@ -105,6 +108,7 @@ const Settings: React.FC = () => {
                             className="w-full border rounded px-3 py-2"
                             required
                         />
+                        {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 mb-1">Last Name</label>
@@ -115,6 +119,7 @@ const Settings: React.FC = () => {
                             className="w-full border rounded px-3 py-2"
                             required
                         />
+                        {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 mb-1">Phone</label>
@@ -124,13 +129,14 @@ const Settings: React.FC = () => {
                             onChange={(e) => setPhone(e.target.value)}
                             className="w-full border rounded px-3 py-2"
                         />
+                        {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 mb-1">Date of Birth</label>
                         <input
                             type="date"
                             value={dob}
-                            onChange={(e) => setDob(e.target.value)} // Date handling
+                            onChange={(e) => setDob(e.target.value)}
                             className="w-full border rounded px-3 py-2"
                         />
                     </div>
@@ -145,7 +151,7 @@ const Settings: React.FC = () => {
                                         onClick={() => handleRemovePreference(preference)}
                                         className="ml-2 text-red-600 hover:text-red-800"
                                     >
-                                        &times; {/* X icon */}
+                                        &times;
                                     </button>
                                 </div>
                             ))}
@@ -153,7 +159,7 @@ const Settings: React.FC = () => {
                         <div className="flex mb-2">
                             <select
                                 value={selectedCategory}
-                                onChange={(e) => setSelectedCategory(e.target.value as ArticleCategory)} // Cast to ArticleCategory
+                                onChange={(e) => setSelectedCategory(e.target.value as ArticleCategory)}
                                 className="border rounded px-3 py-2 w-full"
                             >
                                 <option value="">Select a category</option>
@@ -180,6 +186,7 @@ const Settings: React.FC = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full border rounded px-3 py-2"
                         />
+                        {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
                     </div>
                     <button
                         type="submit"

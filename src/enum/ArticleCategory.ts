@@ -17,6 +17,8 @@ export const articleCategories = Object.values(ArticleCategory);
 
 
 export interface IArticle {
+    hasDisliked: any;
+    hasLiked: any;
     _id: string;
     title: string;
     description: string;
@@ -27,8 +29,8 @@ export interface IArticle {
         firstName: string;
         lastName: string;
     };
-    likes: { userId: string }[];
-    dislikes: { userId: string }[];
+    likes: { userId: mongoose.Types.ObjectId }[];
+    dislikes: { userId: mongoose.Types.ObjectId}[];
     blocks: number;
     blockedBy: mongoose.Types.ObjectId[];
 }
