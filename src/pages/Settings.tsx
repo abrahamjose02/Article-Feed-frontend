@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../axios/axiosInstance';
-import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import Navbar from '../components/Navbar';
 import { ArticleCategory } from '../enum/ArticleCategory';
@@ -43,11 +42,16 @@ const Settings: React.FC = () => {
 
         if (!firstName.trim()) newErrors.firstName = 'First name is required';
         if (!lastName.trim()) newErrors.lastName = 'Last name is required';
-        if (phone && !/^\d{10,15}$/.test(phone)) newErrors.phone = 'Phone number should be 10 digits';
+        if (phone && !/^\d{10,15}$/.test(phone)) newErrors.phone = 'Phone number should be 10-15 digits';
         if (password && password.length < 6) newErrors.password = 'Password should be at least 6 characters';
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
+    };
+
+    const handleFieldChange = (setter: React.Dispatch<React.SetStateAction<string>>, value: string, field: string) => {
+        setter(value);
+        setErrors((prevErrors) => ({ ...prevErrors, [field]: '' }));
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -104,9 +108,8 @@ const Settings: React.FC = () => {
                         <input
                             type="text"
                             value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
+                            onChange={(e) => handleFieldChange(setFirstName, e.target.value, 'firstName')}
                             className="w-full border rounded px-3 py-2"
-                            required
                         />
                         {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
                     </div>
@@ -115,9 +118,8 @@ const Settings: React.FC = () => {
                         <input
                             type="text"
                             value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
+                            onChange={(e) => handleFieldChange(setLastName, e.target.value, 'lastName')}
                             className="w-full border rounded px-3 py-2"
-                            required
                         />
                         {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
                     </div>
@@ -126,7 +128,7 @@ const Settings: React.FC = () => {
                         <input
                             type="tel"
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                            onChange={(e) => handleFieldChange(setPhone, e.target.value, 'phone')}
                             className="w-full border rounded px-3 py-2"
                         />
                         {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
@@ -183,7 +185,7 @@ const Settings: React.FC = () => {
                         <input
                             type="password"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => handleFieldChange(setPassword, e.target.value, 'password')}
                             className="w-full border rounded px-3 py-2"
                         />
                         {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
