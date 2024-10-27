@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
                         (article: IArticle) => !article.blockedBy.includes(user.id)
                     );
 
-                    // Enhance the articles with hasLiked and hasDisliked properties
+                    
                     const enhancedArticles = visibleArticles.map((article: { likes: any[]; dislikes: any[]; }) => ({
                         ...article,
                         hasLiked: article.likes.some(like => like.userId === user.id),
