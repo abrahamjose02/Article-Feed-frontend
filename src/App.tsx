@@ -10,9 +10,12 @@ import CreateArticle from './pages/CreateArticle'
 import ArticleList from './pages/ArticleList'
 import EditArticle from './pages/EditArticle'
 import PrivateRoute from './components/PrivateRoute'
+import { useEffect } from 'react'
+import { refreshAccessToken } from './utils/authUtils'
 
 
 const App = () => {
+  
   return (
     <div>
       <Toaster position='top-center'/>
