@@ -2,7 +2,7 @@ import axios from 'axios';
 import { refreshAccesToken } from '../utils/authUtils';
 
 const axiosInstance = axios.create({
-  baseURL:'http://localhost:10000/api',
+  baseURL:'https://article-feed-api.onrender.com/api',
   withCredentials: true,  
 });
 
