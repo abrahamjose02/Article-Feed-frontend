@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface DeleteConfirmationModalProps {
@@ -16,8 +15,18 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({ isOpe
                 <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
                 <p className="mb-4">Are you sure you want to delete this article? This action cannot be undone.</p>
                 <div className="flex justify-end">
-                    <button className="mr-2 text-gray-600" onClick={onClose}>Cancel</button>
-                    <button className="text-red-600" onClick={onConfirm}>Delete</button>
+                    <button 
+                        className="mr-2 bg-gray-300 text-gray-800 rounded-full px-4 py-2 transition hover:bg-gray-400" 
+                        onClick={onClose}
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        className="bg-red-600 text-white rounded-full px-4 py-2 transition hover:bg-red-700" 
+                        onClick={onConfirm}
+                    >
+                        Delete
+                    </button>
                 </div>
             </div>
         </div>
