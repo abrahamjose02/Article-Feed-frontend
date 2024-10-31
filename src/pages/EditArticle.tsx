@@ -28,7 +28,6 @@ const EditArticle: React.FC = () => {
                     setContent(content);
                     setTags(tags.join(', '));
                     setCategory(category);
-                    // Assuming images is an array; set the first image if it exists
                     setExistingImage(images[0] || null);
                 }
             } catch (error) {
@@ -43,13 +42,13 @@ const EditArticle: React.FC = () => {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             setNewImage(e.target.files[0]);
-            setExistingImage(null); // Clear existing image preview when a new image is selected
+            setExistingImage(null); 
         }
     };
 
     const handleRemoveImage = () => {
         setNewImage(null);
-        setExistingImage(null); // Clear the existing image preview as well
+        setExistingImage(null); 
     };
 
     const validateForm = () => {
@@ -72,7 +71,7 @@ const EditArticle: React.FC = () => {
             return;
         }
 
-        const formattedContent = formatContent(content)
+        const formattedContent = formatContent(content);
 
         const formData = new FormData();
         formData.append('title', title);
@@ -83,13 +82,9 @@ const EditArticle: React.FC = () => {
         if (newImage) {
             formData.append('image', newImage);
         } else if (existingImage) {
-            formData.append('removeImage', 'false'); 
+            formData.append('removeImage', 'false');
         } else {
-            formData.append('removeImage', 'true'); 
-        }
-        
-        for (let [key, value] of formData.entries()) {
-            console.log(key, value);
+            formData.append('removeImage', 'true');
         }
 
         try {
@@ -116,10 +111,10 @@ const EditArticle: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900">
             <Navbar />
             <div className="container mx-auto p-4 flex-grow flex items-center justify-center">
-                <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg">
+                <div className="bg-gradient-to-br from-gray-200 to-gray-300 p-6 rounded-lg shadow-md w-full max-w-lg">
                     <h1 className="text-2xl font-bold mb-4">Edit Article</h1>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {/* Title Input */}
@@ -229,17 +224,17 @@ const EditArticle: React.FC = () => {
                             ) : (
                                 <input
                                     type="file"
+                                    accept="image/*"
                                     onChange={handleImageChange}
-                                    className={`w-full border rounded px-3 py-2 ${errors.image ? 'border-red-500' : ''}`}
+                                    className="border rounded px-3 py-2"
                                 />
                             )}
-                            {errors.image && <span className="text-red-500">{errors.image}</span>}
                         </div>
 
                         {/* Submit Button */}
                         <button
                             type="submit"
-                            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+                            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
                         >
                             Update Article
                         </button>
