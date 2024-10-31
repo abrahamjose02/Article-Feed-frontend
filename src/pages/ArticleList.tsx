@@ -73,17 +73,17 @@ const ArticleList: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-800 via-gray-900 to-gray-700">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900">
             <Navbar />
             <div className="container mx-auto p-4 flex-grow flex items-center justify-center">
-                <div className="bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 p-6 rounded-lg shadow-md w-full">
-                    <h1 className="text-2xl font-bold mb-4 text-white">My Articles</h1>
+                <div className="bg-gradient-to-br from-gray-200 to-gray-300 p-6 rounded-lg shadow-md w-full">
+                    <h1 className="text-2xl font-bold mb-4">My Articles</h1>
                     {articles.length === 0 ? (
-                        <div className="text-white">No articles found.</div>
+                        <div>No articles found.</div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {articles.map(article => (
-                                <div key={article._id} className="border rounded-lg p-4 shadow-lg bg-white transition-transform transform hover:scale-105">
+                                <div key={article._id} className="border rounded-lg p-4 shadow-md bg-white transition-transform transform hover:scale-105">
                                     {article.images.length > 0 && (
                                         <img
                                             src={article.images[0]} 
@@ -92,15 +92,13 @@ const ArticleList: React.FC = () => {
                                             onClick={() => handleViewDetails(article)} // Open modal on image click
                                         />
                                     )}
-                                    <h2 className="text-lg font-semibold mt-2 cursor-pointer hover:text-blue-600" onClick={() => handleViewDetails(article)}>
-                                        {article.title}
-                                    </h2>
+                                    <h2 className="text-lg font-semibold mt-2">{article.title}</h2>
                                     <p className="text-gray-600 text-sm mt-1">{article.description}</p>
                                     <div className="flex justify-between mt-2">
-                                        <button className="text-blue-600 hover:text-blue-800" onClick={() => handleEdit(article._id)}>
+                                        <button className="text-blue-600" onClick={() => handleEdit(article._id)}>
                                             <AiOutlineEdit className="mr-1" />
                                         </button>
-                                        <button className="text-red-600 hover:text-red-800" onClick={() => openDeleteModal(article._id)}>
+                                        <button className="text-red-600" onClick={() => openDeleteModal(article._id)}>
                                             <AiOutlineDelete className="mr-1" /> 
                                         </button>
                                     </div>
@@ -115,10 +113,10 @@ const ArticleList: React.FC = () => {
                     )}
                 </div>
             </div>
-            
+         
             <ArticleModal article={selectedArticle} isOpen={isModalOpen} onClose={closeModal} />
 
-            
+       
             <DeleteConfirmationModal 
                 isOpen={isDeleteModalOpen}
                 onClose={closeDeleteModal}
