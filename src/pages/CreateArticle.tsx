@@ -6,7 +6,6 @@ import { articleCategories } from '../enum/ArticleCategory';
 import Navbar from '../components/Navbar';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import Spinner from '../components/Spinner';  // Import Spinner component
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Title is required.'),
@@ -46,7 +45,6 @@ const CreateArticle: React.FC = () => {
             }}
             validationSchema={validationSchema}
             onSubmit={async (values, { setSubmitting }) => {
-              // Start submission
               const formattedContent = formatContent(values.content);
               const formData = new FormData();
               formData.append('title', values.title);
@@ -64,7 +62,6 @@ const CreateArticle: React.FC = () => {
               } catch (error: any) {
                 toast.error(error.response?.data?.message || 'Failed to create article');
               } finally {
-                // Reset submitting state
                 setSubmitting(false);
               }
             }}
@@ -161,17 +158,13 @@ const CreateArticle: React.FC = () => {
                   )}
                 </div>
 
-                <div className="w-full py-2 flex justify-center">
-                  {isSubmitting ? <Spinner /> : (
-                    <button
-                      type="submit"
-                      className="w-full py-2 rounded text-white bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 transition-all"
-                      disabled={isSubmitting}  // Disable button during submission
-                    >
-                      Create Article
-                    </button>
-                  )}
-                </div>
+                <button
+                  type="submit"
+                  className="w-full py-2 rounded text-white bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 transition-all"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Creating...' : 'Create Article'}
+                </button>
               </Form>
             )}
           </Formik>

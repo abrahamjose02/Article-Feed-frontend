@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import { AiOutlineLike, AiFillLike, AiOutlineDislike, AiFillDislike } from 'react-icons/ai';
 import ArticleModal from '../components/ArticleModal';
-import Spinner from '../components/Spinner';  // Import the Spinner component
 import { IArticle } from '../enum/ArticleCategory';
 import Navbar from '../components/Navbar';
 
@@ -23,7 +22,7 @@ const Dashboard: React.FC = () => {
                         (article: IArticle) => !article.blockedBy.includes(user.id)
                     );
 
-                    const enhancedArticles = visibleArticles.map((article: IArticle) => ({
+                    const enhancedArticles = visibleArticles.map((article: { likes: any[]; dislikes: any[]; }) => ({
                         ...article,
                         hasLiked: article.likes.some(like => like.userId === user.id),
                         hasDisliked: article.dislikes.some(dislike => dislike.userId === user.id),
@@ -115,11 +114,7 @@ const Dashboard: React.FC = () => {
     };
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-800 via-gray-900 to-gray-700">
-                <Spinner />
-            </div>
-        );
+        return <div className="text-center mt-10">Loading articles...</div>;
     }
 
     return (

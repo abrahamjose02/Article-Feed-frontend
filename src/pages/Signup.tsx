@@ -22,7 +22,6 @@ const Signup: React.FC = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const [loading, setLoading] = useState(false); // State for loading
 
     const formik = useFormik<SignupFormValues>({
         initialValues: {
@@ -55,7 +54,6 @@ const Signup: React.FC = () => {
                 .required('Password is required'),
         }),
         onSubmit: async (values: SignupFormValues) => {
-            setLoading(true); // Set loading to true
             try {
                 const res = await axiosInstance.post('/auth/register', {
                     firstName: values.firstName,
@@ -66,7 +64,6 @@ const Signup: React.FC = () => {
                     password: values.password,
                     preferences: values.preferences,
                 });
-                setLoading(false); // Reset loading state
                 if (res.status === 201) {
                     dispatch(
                         setUser({
@@ -85,7 +82,6 @@ const Signup: React.FC = () => {
                     toast.error('Unexpected response from the server. Please try again.');
                 }
             } catch (error: any) {
-                setLoading(false); // Reset loading state
                 const errorMessage = error.response?.data?.message || 'Signup failed. Please try again.';
                 toast.error(errorMessage);
             }
@@ -99,6 +95,7 @@ const Signup: React.FC = () => {
             <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
                 <h1 className="text-2xl font-bold text-center text-gray-700 mb-6">SIGN UP</h1>
                 <form onSubmit={formik.handleSubmit}>
+                    {/* First and Last Name in Horizontal Line */}
                     <div className="flex space-x-4 mb-4">
                         <div className="flex-1">
                             <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
@@ -126,6 +123,7 @@ const Signup: React.FC = () => {
                         </div>
                     </div>
 
+                    {/* Email */}
                     <div className="mb-4">
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
                         <input
@@ -139,6 +137,7 @@ const Signup: React.FC = () => {
                         )}
                     </div>
 
+                    {/* Phone Number */}
                     <div className="mb-4">
                         <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
                         <input
@@ -152,6 +151,7 @@ const Signup: React.FC = () => {
                         )}
                     </div>
 
+                    {/* Date of Birth */}
                     <div className="mb-4">
                         <label htmlFor="dob" className="block text-sm font-medium text-gray-700">Date of Birth</label>
                         <input
@@ -165,6 +165,7 @@ const Signup: React.FC = () => {
                         )}
                     </div>
 
+                    {/* Preferences */}
                     <div className="mb-4">
                         <label 
                             className="block text-sm font-medium text-gray-700 cursor-pointer" 
@@ -182,6 +183,7 @@ const Signup: React.FC = () => {
                                     {formik.values.preferences.length === 0 ? 'Select Preferences' : formik.values.preferences.join(', ')}
                                 </span>
                                 <span className="ml-2">
+                                    {/* Downward arrow icon */}
                                     <svg
                                         className="h-5 w-5 text-gray-600"
                                         xmlns="http://www.w3.org/2000/svg"
@@ -196,33 +198,33 @@ const Signup: React.FC = () => {
                             {dropdownVisible && (
                                 <div className="absolute z-10 bg-white shadow-lg rounded-md max-h-40 w-full overflow-y-auto mt-1 border border-gray-300">
                                     {preferenceOptions.map((preference) => (
-                                        <label key={preference} className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                        <div key={preference} className="flex items-center p-2 hover:bg-indigo-100 cursor-pointer">
                                             <input
                                                 type="checkbox"
-                                                className="mr-2"
+                                                id={preference}
                                                 value={preference}
                                                 checked={formik.values.preferences.includes(preference)}
-                                                onChange={() => {
-                                                    const currentIndex = formik.values.preferences.indexOf(preference);
-                                                    const newPreferences = [...formik.values.preferences];
-
-                                                    if (currentIndex === -1) {
-                                                        newPreferences.push(preference);
+                                                onChange={(e) => {
+                                                    const selectedPreferences = formik.values.preferences;
+                                                    if (e.target.checked) {
+                                                        formik.setFieldValue('preferences', [...selectedPreferences, preference]);
                                                     } else {
-                                                        newPreferences.splice(currentIndex, 1);
+                                                        formik.setFieldValue('preferences', selectedPreferences.filter(p => p !== preference));
                                                     }
-
-                                                    formik.setFieldValue('preferences', newPreferences);
                                                 }}
+                                                className="mr-2"
                                             />
-                                            {preference}
-                                        </label>
+                                            <label htmlFor={preference} className="block text-sm text-gray-700">
+                                                {preference}
+                                            </label>
+                                        </div>
                                     ))}
                                 </div>
                             )}
                         </div>
                     </div>
 
+                    {/* Password */}
                     <div className="mb-4">
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
                         <input
@@ -238,22 +240,14 @@ const Signup: React.FC = () => {
 
                     <button
                         type="submit"
-                        className={`w-full py-2 px-4 font-semibold text-white rounded-md ${loading ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'} transition duration-200`}
-                        disabled={loading}
+                        className="w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     >
-                        {loading ? (
-                            <svg
-                                className="animate-spin h-5 w-5 mx-auto text-white"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                            >
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8-8-3.582-8-8z"></path>
-                            </svg>
-                        ) : (
-                            'Create Account'
-                        )}
+                        Sign Up
                     </button>
+
+                    <p className="text-center mt-4 text-sm text-gray-500">
+            Already have an account? <a href="/login" className="text-indigo-600 hover:underline">Login</a>
+          </p>
                 </form>
             </div>
         </div>
