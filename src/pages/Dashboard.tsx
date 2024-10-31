@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import { AiOutlineLike, AiFillLike, AiOutlineDislike, AiFillDislike } from 'react-icons/ai';
 import ArticleModal from '../components/ArticleModal';
+import BlockConfirmationModal from '../components/BlockConfirmationModal'; // Import the new modal
 import { IArticle } from '../enum/ArticleCategory';
 import Navbar from '../components/Navbar';
 
@@ -11,6 +12,8 @@ const Dashboard: React.FC = () => {
     const [articles, setArticles] = useState<IArticle[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedArticle, setSelectedArticle] = useState<IArticle | null>(null);
+    const [blockModalOpen, setBlockModalOpen] = useState(false); // State for the block confirmation modal
+    const [articleToBlock, setArticleToBlock] = useState<string | null>(null); // ID of the article to block
     const user = useSelector((state: any) => state.user);
 
     useEffect(() => {
@@ -98,6 +101,8 @@ const Dashboard: React.FC = () => {
             if (res.data.success) {
                 setArticles(prevArticles => prevArticles.filter(article => article._id !== articleId));
                 toast.success('Article blocked successfully');
+                setBlockModalOpen(false); // Close the modal after blocking
+                setArticleToBlock(null); // Reset articleToBlock
             }
         } catch (error: any) {
             console.error(error);
@@ -111,6 +116,16 @@ const Dashboard: React.FC = () => {
 
     const closeModal = () => {
         setSelectedArticle(null);
+    };
+
+    const openBlockModal = (articleId: string) => {
+        setArticleToBlock(articleId);
+        setBlockModalOpen(true);
+    };
+
+    const closeBlockModal = () => {
+        setBlockModalOpen(false);
+        setArticleToBlock(null);
     };
 
     if (loading) {
@@ -167,7 +182,10 @@ const Dashboard: React.FC = () => {
                                         <span className="ml-1">{article.dislikes.length}</span>
                                     </button>
                                 </div>
-                                <button className="text-red-600 hover:text-red-800 transition-colors" onClick={() => handleBlock(article._id)}>
+                                <button 
+                                    className="text-red-600 hover:text-red-800 transition-colors" 
+                                    onClick={() => openBlockModal(article._id)}
+                                >
                                     Block
                                 </button>
                             </div>
@@ -178,6 +196,15 @@ const Dashboard: React.FC = () => {
             {selectedArticle && (
                 <ArticleModal article={selectedArticle} onClose={closeModal} />
             )}
+            <BlockConfirmationModal 
+                isOpen={blockModalOpen} 
+                onClose={closeBlockModal} 
+                onConfirm={() => {
+                    if (articleToBlock) {
+                        handleBlock(articleToBlock);
+                    }
+                }} 
+            />
         </div>
     );
 };
