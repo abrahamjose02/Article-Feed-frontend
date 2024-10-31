@@ -6,6 +6,7 @@ import { articleCategories } from '../enum/ArticleCategory';
 import Navbar from '../components/Navbar';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import Spinner from '../components/Spinner';  // Import Spinner component
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Title is required.'),
@@ -18,6 +19,7 @@ const validationSchema = Yup.object().shape({
 
 const CreateArticle: React.FC = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);  
   const navigate = useNavigate();
 
   const formatContent = (content: string) => {
@@ -45,6 +47,7 @@ const CreateArticle: React.FC = () => {
             }}
             validationSchema={validationSchema}
             onSubmit={async (values, { setSubmitting }) => {
+              setIsSubmitting(true);  // Show spinner when submission starts
               const formattedContent = formatContent(values.content);
               const formData = new FormData();
               formData.append('title', values.title);
@@ -63,6 +66,7 @@ const CreateArticle: React.FC = () => {
                 toast.error(error.response?.data?.message || 'Failed to create article');
               } finally {
                 setSubmitting(false);
+                setIsSubmitting(false);  // Hide spinner after submission completes
               }
             }}
           >
@@ -158,13 +162,17 @@ const CreateArticle: React.FC = () => {
                   )}
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full py-2 rounded text-white bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 transition-all"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Creating...' : 'Create Article'}
-                </button>
+                {/* Show Spinner during submission */}
+                <div className="w-full py-2 flex justify-center">
+                  {isSubmitting ? <Spinner /> : (
+                    <button
+                      type="submit"
+                      className="w-full py-2 rounded text-white bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 transition-all"
+                    >
+                      Create Article
+                    </button>
+                  )}
+                </div>
               </Form>
             )}
           </Formik>

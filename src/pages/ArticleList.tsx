@@ -5,15 +5,18 @@ import { useNavigate } from 'react-router-dom';
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
 import Navbar from '../components/Navbar';
 import ArticleModal from '../components/MyArticleModal';
+import Spinner from '../components/Spinner';
 
 const ArticleList: React.FC = () => {
     const [articles, setArticles] = useState<any[]>([]);
     const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loading, setLoading] = useState(true);  // Loading state
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserArticles = async () => {
+            setLoading(true);  // Start loading spinner
             try {
                 const res = await axiosInstance.get('/articles/user');
                 if (res.data.success) {
@@ -22,6 +25,8 @@ const ArticleList: React.FC = () => {
             } catch (error) {
                 console.error(error);
                 toast.error('Failed to load articles');
+            } finally {
+                setLoading(false);  // Stop loading spinner
             }
         };
 
@@ -60,7 +65,11 @@ const ArticleList: React.FC = () => {
             <Navbar />
             <div className="container mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-4">My Articles</h1>
-                {articles.length === 0 ? (
+                
+                {loading ? (
+                    // Show spinner while loading
+                    <Spinner />
+                ) : articles.length === 0 ? (
                     <div>No articles found.</div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
